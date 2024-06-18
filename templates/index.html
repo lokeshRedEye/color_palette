@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILO - Photo Editor - Extract Colors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            background-color: #13293d; /* Dark blue background */
+            color: #fff; /* Text color */
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            background-color: #1e3a55; /* Darker blue background */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .upload-container {
+            margin-bottom: 10px;
+        }
+        .upload-label {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #4a90e2; /* Lighter blue border color */
+            text-align: center;
+            cursor: pointer;
+        }
+        .upload-label p {
+            margin: 0;
+            color: #bbb; /* Light gray text color */
+        }
+        .upload-label input {
+            display: none;
+        }
+        .colors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px; /* Space between image and colors */
+        }
+        .color-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .color {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .rgb-value {
+            font-size: 14px;
+            color: #bbb; /* Light gray text color for RGB values */
+            margin-top: 5px; /* Space between color and RGB value */
+        }
+        #uploadedImage {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        #submitBtn {
+            padding: 10px 20px;
+            background-color: #4a90e2; /* Lighter blue button background */
+            color: #fff; /* White button text color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #submitBtn:hover {
+            background-color: #357ebd; /* Darker blue button background on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="/static/silo.png" width="100px" height="100px" style="border-radius:50%">
+            <h1>SILO - Photo Editor - Extract Colors</h1>
+        </header>
+
+        <main>
+            <form action="/" method="post" enctype="multipart/form-data" class="upload-form">
+                {% if uploaded_image %}
+                    <img id="uploadedImage" src="{{ uploaded_image }}" >
+                {% else %}
+                    <img id="uploadedImage" src="#" alt="Uploaded Image" style="display:none;">
+                {% endif %}
+                <div class="upload-container" id="uploadContainer">
+                    <label for="imageInput" class="upload-label">
+                        <p>Drag & Drop your image here or click to upload</p>
+                        <input type="file" name="image" id="imageInput" accept="image/*" required onchange="previewImage(event)">
+                    </label>
+                </div>
+
+                <button type="submit" id="submitBtn">Extract Colors</button>
+            </form>
+
+            <div class="colors">
+                {% for color in colors %}
+                    <div class="color-container">
+                        <div class="color" style="background-color: rgb{{color}};"></div>
+                        <div class="rgb-value">RGB: {{color}}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('uploadedImage');
+                output.src = reader.result;
+                output.style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>
