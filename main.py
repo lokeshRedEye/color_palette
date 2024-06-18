@@ -1,5 +1,4 @@
 import os
-import numpy as np
 from flask import Flask, request, render_template, url_for
 from PIL import Image
 import random
@@ -20,16 +19,12 @@ def extract_random_colors(image_file, num_colors=30):
     image = image.convert("RGB")
     # Resize image to reduce the number of pixels (optional)
     image = image.resize((100, 100))
-    # Convert image to numpy array
-    np_image = np.array(image)
-    # Reshape the array to be a list of pixels
-    pixels = np_image.reshape((-1, 3))
+    # Get image data
+    pixels = list(image.getdata())
     # Ensure num_colors is not greater than the number of unique pixels
     num_colors = min(num_colors, len(pixels))
     # Randomly sample colors
-    random_colors = random.sample(list(map(tuple, pixels)), num_colors)
-    # Convert numpy.uint8 values to regular integers
-    random_colors = [(int(r), int(g), int(b)) for r, g, b in random_colors]
+    random_colors = random.sample(pixels, num_colors)
     return random_colors
 
 @app.route("/", methods=["GET", "POST"])
